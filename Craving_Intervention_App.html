@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Integrated Craving Intervention Manual</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome (for icons, replacing SVG) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chosen Palette: Sand & Sage
+         Backgrounds: Warm Neutrals (bg-stone-50, bg-stone-100)
+         Primary Action/Highlight: Sage Green (text-emerald-700, bg-emerald-600)
+         Warning/Old Habit: Muted Terracotta (text-orange-700, bg-orange-100)
+         Text: Charcoal (text-stone-800)
+    -->
+
+    <!-- Application Structure Plan:
+         Designed as a "Cognitive Journey" Dashboard. The user scrolls through the 3 phases of the manual.
+         1. Hero Section: Sets the scientific context (Willpower vs. Rewiring).
+         2. Phase 1 (The Map): Focuses on identification. Uses a 'Habit Loop' interactive diagram and a 'Cue Categorizer' visualization.
+         3. Phase 2 (The Hacking): Focuses on re-evaluation. Features an 'Urge Surfing' dynamic chart and a 'Reward Discrepancy' calculator to visualize the negative prediction error.
+         4. Phase 3 (The Rewiring): Focuses on conditioning. Includes a 'New Loop' builder and a 'Future Self' visualizer.
+         Navigation is sticky to allow jumping between phases.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Habit Loop (HTML/CSS Grid): Used to visualize the cycle. Interactive click-to-reveal details. Better than static text for understanding the mechanism.
+         2. Trigger Distribution (Chart.js Doughnut): Visualizes the types of cues (Environmental, Emotional, Social). Justification: Helps users realize triggers are diverse.
+         3. Urge Surfing (Chart.js Line): Visualizes the transient nature of cravings. Interaction: 'Start Wave' animation showing intensity rising and falling over time vs. fighting it.
+         4. Reward Value Gap (Chart.js Bar): Visualizes 'Expected' vs 'Actual' reward. Justification: Core concept of Negative Prediction Error.
+         5. Curiosity Timer (Canvas): A visual countdown for the 5-minute block.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Chart Container Styling - Mandatory Requirement */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .phase-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .phase-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8a29e; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716c; 
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-brain text-emerald-600 text-xl mr-2"></i>
+                    <span class="font-bold text-lg tracking-tight text-stone-700">Craving Intervention Manual</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('intro')" class="text-stone-500 hover:text-emerald-600 font-medium transition-colors">Introduction</button>
+                    <button onclick="scrollToSection('phase1')" class="text-stone-500 hover:text-emerald-600 font-medium transition-colors">Phase 1: The Map</button>
+                    <button onclick="scrollToSection('phase2')" class="text-stone-500 hover:text-emerald-600 font-medium transition-colors">Phase 2: The Hack</button>
+                    <button onclick="scrollToSection('phase3')" class="text-stone-500 hover:text-emerald-600 font-medium transition-colors">Phase 3: Rewire</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-stone-600 hover:text-stone-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-stone-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="scrollToSection('intro')" class="block w-full text-left px-3 py-2 text-base font-medium text-stone-600 hover:bg-stone-100 hover:text-emerald-600 rounded-md">Introduction</button>
+                <button onclick="scrollToSection('phase1')" class="block w-full text-left px-3 py-2 text-base font-medium text-stone-600 hover:bg-stone-100 hover:text-emerald-600 rounded-md">Phase 1: The Map</button>
+                <button onclick="scrollToSection('phase2')" class="block w-full text-left px-3 py-2 text-base font-medium text-stone-600 hover:bg-stone-100 hover:text-emerald-600 rounded-md">Phase 2: The Hack</button>
+                <button onclick="scrollToSection('phase3')" class="block w-full text-left px-3 py-2 text-base font-medium text-stone-600 hover:bg-stone-100 hover:text-emerald-600 rounded-md">Phase 3: Rewire</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+
+        <!-- Hero / Introduction -->
+        <section id="intro" class="mb-20 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-6 tracking-tight">
+                Rewiring the <span class="text-emerald-600">Non-Conscious Brain</span>
+            </h1>
+            <p class="text-xl text-stone-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Willpower is a limited resource. To truly alleviate cravings, we must stop fighting them and instead update the brain's internal <strong>Reward Value</strong>. This manual combines reinforcement learning with mindfulness to structurally dismantle habits.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-stone-100 hover:border-emerald-200 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-map text-emerald-600"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 mb-2">Phase 1: Awareness</h3>
+                    <p class="text-sm text-stone-500">Make the unconscious conscious. Identify cues and map the habit loop.</p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-stone-100 hover:border-emerald-200 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-flask text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 mb-2">Phase 2: Reward Value</h3>
+                    <p class="text-sm text-stone-500">Update the brain's data. Prove that the old habit is actually unrewarding.</p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-stone-100 hover:border-emerald-200 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-plug text-orange-600"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 mb-2">Phase 3: Rewiring</h3>
+                    <p class="text-sm text-stone-500">Install a new "Bigger, Better Offer" driven by curiosity and mastery.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 1 -->
+        <section id="phase1" class="mb-24 scroll-mt-24">
+            <div class="border-l-4 border-emerald-500 pl-6 mb-8">
+                <h2 class="text-3xl font-bold text-stone-900">Phase 1: Awareness & Deconstruction</h2>
+                <p class="text-lg text-emerald-700 font-medium mt-1">The Map</p>
+            </div>
+            
+            <p class="text-stone-600 mb-8 leading-relaxed">
+                Before change can happen, the non-conscious habit must be made conscious. Every craving follows the <strong>Habit Loop</strong>. This section helps you identify your specific loops and the hidden triggers behind them. The true trigger is rarely the substance itself—it's often an emotion or context.
+            </p>
+
+            <!-- Interactive Habit Loop -->
+            <div class="bg-white rounded-2xl shadow-lg border border-stone-200 p-8 mb-12">
+                <h3 class="text-xl font-bold text-stone-800 mb-6 border-b pb-2">The Habit Loop Model</h3>
+                <p class="text-stone-500 text-sm mb-6">Click on any component of the loop to reveal its role in your cravings.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center items-center relative">
+                    <!-- Arrows for desktop -->
+                    <div class="hidden md:block absolute top-1/2 left-1/4 w-1/4 border-t-2 border-stone-300 border-dashed transform -translate-y-1/2"></div>
+                    <div class="hidden md:block absolute top-1/2 right-1/4 w-1/4 border-t-2 border-stone-300 border-dashed transform -translate-y-1/2"></div>
+
+                    <!-- Trigger -->
+                    <div onclick="updateHabitDetail('trigger')" class="relative z-10 cursor-pointer group">
+                        <div class="bg-stone-50 border-2 border-emerald-100 group-hover:border-emerald-500 rounded-xl p-6 transition-all duration-300">
+                            <div class="text-3xl mb-3">⚡</div>
+                            <h4 class="font-bold text-stone-800">1. Trigger (Cue)</h4>
+                            <p class="text-xs text-stone-500 mt-2">The context preceding the urge.</p>
+                        </div>
+                    </div>
+
+                    <!-- Routine -->
+                    <div onclick="updateHabitDetail('routine')" class="relative z-10 cursor-pointer group">
+                        <div class="bg-stone-50 border-2 border-orange-100 group-hover:border-orange-500 rounded-xl p-6 transition-all duration-300">
+                            <div class="text-3xl mb-3">🔄</div>
+                            <h4 class="font-bold text-stone-800">2. Routine</h4>
+                            <p class="text-xs text-stone-500 mt-2">The craving or behavior.</p>
+                        </div>
+                    </div>
+
+                    <!-- Reward -->
+                    <div onclick="updateHabitDetail('reward')" class="relative z-10 cursor-pointer group">
+                        <div class="bg-stone-50 border-2 border-blue-100 group-hover:border-blue-500 rounded-xl p-6 transition-all duration-300">
+                            <div class="text-3xl mb-3">🎁</div>
+                            <h4 class="font-bold text-stone-800">3. Reward</h4>
+                            <p class="text-xs text-stone-500 mt-2">The emotional relief sought.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panel -->
+                <div id="habit-detail-panel" class="mt-8 bg-stone-50 rounded-lg p-6 border-l-4 border-stone-400">
+                    <h5 id="habit-detail-title" class="font-bold text-lg text-stone-900 mb-2">Select a component above</h5>
+                    <p id="habit-detail-text" class="text-stone-600">Interact with the diagram to understand how the loop functions in your brain.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Trigger Types Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">Step 1.1: Identify the Cue</h3>
+                    <p class="text-sm text-stone-500 mb-4">Cravings are often misidentified. We often think we want the "Thing", but we really want relief from the "Context".</p>
+                    
+                    <div class="chart-container">
+                        <canvas id="triggerChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-stone-400 text-center">
+                        *Representative distribution of common triggers
+                    </div>
+                </div>
+
+                <!-- The Craving Log Simulator -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">Step 1.2: The Craving Log</h3>
+                    <p class="text-sm text-stone-500 mb-4">Practice the "Curiosity Hack". Instead of judging ("I shouldn't"), simply log the data.</p>
+                    
+                    <div class="flex-grow space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-stone-600 mb-1">Cue (What just happened?)</label>
+                            <select id="log-cue" class="w-full bg-stone-50 border border-stone-200 rounded-md p-2 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                                <option>Stress / Anxiety</option>
+                                <option>Boredom</option>
+                                <option>Seeing Food/Phone</option>
+                                <option>Time of Day</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-stone-600 mb-1">Routine (What do you want?)</label>
+                            <input type="text" id="log-routine" placeholder="e.g., Chocolate, Scroll Social Media" class="w-full bg-stone-50 border border-stone-200 rounded-md p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-stone-600 mb-1">True Expected Reward</label>
+                            <select id="log-reward" class="w-full bg-stone-50 border border-stone-200 rounded-md p-2 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                                <option>Relief / Calm</option>
+                                <option>Distraction</option>
+                                <option>Energy</option>
+                                <option>Numbing</option>
+                            </select>
+                        </div>
+                        <button onclick="addToLog()" class="w-full bg-emerald-600 text-white rounded-md py-2 text-sm font-semibold hover:bg-emerald-700 transition-colors">
+                            Log with Curiosity
+                        </button>
+                    </div>
+
+                    <!-- Recent Logs Display -->
+                    <div class="mt-6 border-t pt-4">
+                        <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wide mb-2">Recent Insights</h4>
+                        <ul id="log-list" class="text-sm space-y-2 text-stone-600 h-32 overflow-y-auto">
+                            <li class="p-2 bg-stone-50 rounded border border-stone-100 italic text-stone-400 text-center py-4">No entries yet. Start by logging a craving above.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2 -->
+        <section id="phase2" class="mb-24 scroll-mt-24">
+            <div class="border-l-4 border-blue-500 pl-6 mb-8">
+                <h2 class="text-3xl font-bold text-stone-900">Phase 2: Reward Value Update</h2>
+                <p class="text-lg text-blue-700 font-medium mt-1">The Hacking</p>
+            </div>
+
+            <p class="text-stone-600 mb-8 leading-relaxed">
+                The goal here is to teach the non-conscious brain (specifically the orbitofrontal cortex) that the old habit is unrewarding. We do this through <strong>Negative Prediction Error</strong>—noticing that the expected reward doesn't match the actual experience.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Urge Surfing Visualization -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-stone-800">Step 2.1: Urge Surfing</h3>
+                        <button onclick="startUrgeWave()" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full hover:bg-blue-700 transition">
+                            <i class="fa-solid fa-play mr-1"></i> Start Wave
+                        </button>
+                    </div>
+                    <p class="text-sm text-stone-500 mb-4">
+                        Cravings are not static. Like a wave, they rise, peak, and fall. If you fight (Red), the struggle persists. If you observe (Blue), it subsides naturally.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="urgeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Disenchantment Tool -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">Step 2.2: The Disenchantment Practice</h3>
+                    <p class="text-sm text-stone-500 mb-4">
+                        If you indulge, do it mindfully. Notice the gap between what you <em>expected</em> and what you <em>got</em>.
+                    </p>
+
+                    <div class="bg-stone-50 p-4 rounded-lg mb-6">
+                        <h4 class="text-sm font-bold text-stone-700 mb-3">Simulation: The "Bite" Effect</h4>
+                        <div class="mb-4">
+                            <label class="flex justify-between text-xs text-stone-500 mb-1">
+                                <span>Bite/Scroll Count</span>
+                                <span id="bite-count-val">1</span>
+                            </label>
+                            <input type="range" id="bite-slider" min="1" max="10" value="1" class="w-full accent-blue-600" oninput="updateBiteChart(this.value)">
+                        </div>
+                        <div class="chart-container" style="height: 180px;">
+                            <canvas id="rewardChart"></canvas>
+                        </div>
+                    </div>
+                    <p class="text-xs text-stone-500 italic">
+                        "The dopamine signal that used to say 'Do this again!' now says 'Wait, that wasn't worth it.'"
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3 -->
+        <section id="phase3" class="mb-24 scroll-mt-24">
+            <div class="border-l-4 border-orange-500 pl-6 mb-8">
+                <h2 class="text-3xl font-bold text-stone-900">Phase 3: The Rewiring</h2>
+                <p class="text-lg text-orange-700 font-medium mt-1">Conditioning the "Bigger, Better Offer"</p>
+            </div>
+
+            <p class="text-stone-600 mb-8 leading-relaxed">
+                The brain needs a new, higher-value reward to replace the old habit. We replace the routine with <strong>Curiosity</strong> and the reward with <strong>Mastery & Freedom</strong>. This is positive conditioning.
+            </p>
+
+            <div class="bg-white rounded-2xl shadow-lg border border-stone-200 overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    
+                    <!-- The 5 Minute Curiosity Block -->
+                    <div class="p-8 border-b md:border-b-0 md:border-r border-stone-200">
+                        <h3 class="text-xl font-bold text-stone-800 mb-4">Step 3.1: The 5-Minute Block</h3>
+                        <p class="text-sm text-stone-500 mb-6">
+                            When the Cue hits, substitute the habit with 5 minutes of curious observation. "I am allowing the sensation to be here."
+                        </p>
+                        
+                        <div class="flex flex-col items-center justify-center py-6">
+                            <div class="relative w-48 h-48 mb-6">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="96" cy="96" r="88" stroke="#e7e5e4" stroke-width="8" fill="transparent"></circle>
+                                    <circle id="timer-ring" cx="96" cy="96" r="88" stroke="#f97316" stroke-width="8" fill="transparent" stroke-dasharray="552" stroke-dashoffset="552" class="transition-all duration-1000 ease-linear"></circle>
+                                </svg>
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                                    <span id="timer-display" class="text-4xl font-bold text-stone-800 font-mono">05:00</span>
+                                    <span class="block text-xs text-stone-400 mt-1">CURIOSITY</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-3">
+                                <button onclick="toggleTimer()" id="timer-btn" class="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition shadow-sm font-medium">
+                                    Start Block
+                                </button>
+                                <button onclick="resetTimer()" class="text-stone-400 hover:text-stone-600 px-4 py-2">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- The New Loop Builder -->
+                    <div class="p-8 bg-stone-50">
+                        <h3 class="text-xl font-bold text-stone-800 mb-4">Step 3.2: Establish New Primal Motivator</h3>
+                        <p class="text-sm text-stone-500 mb-6">
+                            Visualize the future. Connect the act of resisting directly to the feeling of <strong>Freedom</strong>.
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg border border-stone-200 opacity-50">
+                                <h4 class="text-xs uppercase font-bold text-stone-400 mb-1">Old Loop</h4>
+                                <div class="flex items-center text-sm text-stone-500">
+                                    <span>Trigger</span>
+                                    <i class="fa-solid fa-arrow-right mx-2 text-xs"></i>
+                                    <span>Eat/Use</span>
+                                    <i class="fa-solid fa-arrow-right mx-2 text-xs"></i>
+                                    <span>Numbness</span>
+                                </div>
+                            </div>
+
+                            <div class="text-center text-emerald-600 font-bold text-lg">
+                                <i class="fa-solid fa-arrow-down"></i> <br> REWIRE
+                            </div>
+
+                            <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200 shadow-sm transform transition hover:scale-105 duration-300">
+                                <h4 class="text-xs uppercase font-bold text-emerald-600 mb-1">New Loop</h4>
+                                <div class="flex flex-col space-y-3">
+                                    <div class="flex items-center text-sm font-semibold text-stone-800">
+                                        <span class="w-20">Trigger</span>
+                                        <i class="fa-solid fa-arrow-right mx-2 text-emerald-400"></i>
+                                        <span>Curiosity (The Tool)</span>
+                                    </div>
+                                    <div class="flex items-center text-sm font-semibold text-stone-800">
+                                        <span class="w-20">Reward</span>
+                                        <i class="fa-solid fa-arrow-right mx-2 text-emerald-400"></i>
+                                        <span class="text-emerald-700">Self-Mastery / Freedom</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg border border-stone-200 mt-4">
+                                <p class="text-xs text-stone-500 italic text-center">
+                                    "I chose freedom over automatism."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-100 border-t border-stone-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-stone-500 text-sm">
+                Based on "The Integrated Craving Intervention Manual". <br>
+                Combining Classical Conditioning & Mindfulness (Dr. Judson Brewer).
+            </p>
+            <div class="mt-4 text-stone-400 text-xs">
+                Generated for educational purposes.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- State Management ---
+        const state = {
+            biteValue: 1,
+            timerRunning: false,
+            timerTime: 300, // 5 minutes in seconds
+            timerInterval: null
+        };
+
+        // --- Navigation ---
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                const offset = 80; // height of nav
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = el.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- Phase 1: Habit Loop Interaction ---
+        const habitDetails = {
+            trigger: {
+                title: "1. The Cue (Trigger)",
+                text: "The true trigger is rarely the substance itself. It is the feeling or context that precedes the urge. Examples: Stress, Boredom, Location, Time of Day. You are being conditioned by these external signals.",
+                color: "border-emerald-500"
+            },
+            routine: {
+                title: "2. The Routine (Behavior)",
+                text: "The automatic impulse. 'I need this now.' It's often a Zombie-like response to the trigger. This is the part we replace with Curiosity.",
+                color: "border-orange-500"
+            },
+            reward: {
+                title: "3. The Reward (Outcome)",
+                text: "What the brain is actually seeking. Usually relief, distraction, or numbing. By identifying the true reward, we can find better ways to achieve it (e.g., Curiosity leads to better relief than Sugar).",
+                color: "border-blue-500"
+            }
+        };
+
+        function updateHabitDetail(part) {
+            const data = habitDetails[part];
+            const panel = document.getElementById('habit-detail-panel');
+            const title = document.getElementById('habit-detail-title');
+            const text = document.getElementById('habit-detail-text');
+
+            title.innerText = data.title;
+            text.innerText = data.text;
+            
+            // Update border color
+            panel.className = `mt-8 bg-stone-50 rounded-lg p-6 border-l-4 ${data.color} transition-colors duration-300`;
+        }
+
+        // --- Phase 1: Craving Log Logic ---
+        function addToLog() {
+            const cue = document.getElementById('log-cue').value;
+            const routine = document.getElementById('log-routine').value;
+            const reward = document.getElementById('log-reward').value;
+
+            if(!routine) {
+                alert("Please enter a routine/behavior.");
+                return;
+            }
+
+            const list = document.getElementById('log-list');
+            
+            // Remove empty placeholder if exists
+            if(list.children[0] && list.children[0].innerText.includes("No entries")) {
+                list.innerHTML = '';
+            }
+
+            const li = document.createElement('li');
+            li.className = "p-3 bg-white rounded border-l-4 border-emerald-500 shadow-sm text-xs flex justify-between items-center animate-pulse";
+            // Remove pulse after animation
+            setTimeout(() => li.classList.remove('animate-pulse'), 1000);
+
+            li.innerHTML = `
+                <div>
+                    <span class="font-bold text-stone-700">${cue}</span> <span class="text-stone-400 mx-1">→</span> 
+                    <span class="text-stone-600">${routine}</span>
+                </div>
+                <span class="text-emerald-600 font-medium ml-2">${reward}</span>
+            `;
+            
+            // Insert at top
+            list.insertBefore(li, list.firstChild);
+
+            // Reset input
+            document.getElementById('log-routine').value = '';
+        }
+
+        // --- Phase 2: Urge Surfing Chart ---
+        let urgeChartInstance = null;
+
+        function initUrgeChart() {
+            const ctx = document.getElementById('urgeChart').getContext('2d');
+            
+            // Initial Data: The Struggle (Fighting it)
+            const initialData = {
+                labels: Array.from({length: 20}, (_, i) => i + 1),
+                datasets: [
+                    {
+                        label: 'Fighting It (Willpower)',
+                        data: [2, 4, 6, 8, 8, 9, 8, 9, 8, 9, 8, 8, 7, 8, 8, 9, 8, 7, 8, 8], // Jagged, high
+                        borderColor: '#ef4444', // Red
+                        borderWidth: 2,
+                        tension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Observing It (Curiosity)',
+                        data: [2, 4, 6, 8, 9, 8, 6, 4, 3, 2, 1, 0.5, 0, 0, 0, 0, 0, 0, 0, 0], // Sine wave decay
+                        borderColor: '#2563eb', // Blue
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            };
+
+            urgeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: initialData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: { display: true, text: 'Intensity of Craving' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Time (Minutes)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function startUrgeWave() {
+            // Re-trigger animation
+            urgeChartInstance.reset();
+            urgeChartInstance.update();
+        }
+
+        // --- Phase 2: Reward Value Chart (Disenchantment) ---
+        let rewardChartInstance = null;
+
+        function initRewardChart() {
+            const ctx = document.getElementById('rewardChart').getContext('2d');
+            rewardChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Expected Reward', 'Actual Reward'],
+                    datasets: [{
+                        label: 'Dopamine/Satisfaction Level',
+                        data: [9, 3], // Initial values
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.6)', // Emerald (Expected - initially high illusion)
+                            'rgba(249, 115, 22, 0.6)'  // Orange (Actual)
+                        ],
+                        borderColor: [
+                            'rgb(16, 185, 129)',
+                            'rgb(249, 115, 22)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateBiteChart(biteNum) {
+            document.getElementById('bite-count-val').innerText = biteNum;
+            
+            // Logic: Expected reward stays high (habit), Actual reward drops fast
+            // Bite 1: Exp 9, Act 8
+            // Bite 5: Exp 9, Act 4
+            // Bite 10: Exp 9, Act 1
+            const expected = 9; // Brain remembers the "Best" time
+            const actual = Math.max(1, 9 - (biteNum * 0.9)); // Diminishing returns
+
+            rewardChartInstance.data.datasets[0].data = [expected, actual];
+            rewardChartInstance.update();
+        }
+
+        // --- Phase 1: Trigger Distribution Chart ---
+        function initTriggerChart() {
+            const ctx = document.getElementById('triggerChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Emotional (Stress/Boredom)', 'Environmental (Visuals)', 'Social/Time'],
+                    datasets: [{
+                        data: [50, 30, 20],
+                        backgroundColor: [
+                            '#f59e0b', // Amber
+                            '#10b981', // Emerald
+                            '#3b82f6'  // Blue
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        }
+
+        // --- Phase 3: Timer Logic ---
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateTimerVisuals() {
+            const display = document.getElementById('timer-display');
+            const ring = document.getElementById('timer-ring');
+            
+            display.innerText = formatTime(state.timerTime);
+            
+            // Update ring stroke offset
+            // Circumference = 2 * PI * 88 ~= 552
+            const circumference = 552;
+            const offset = circumference - (state.timerTime / 300) * circumference;
+            ring.style.strokeDashoffset = offset;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            
+            if (state.timerRunning) {
+                // Stop
+                clearInterval(state.timerInterval);
+                state.timerRunning = false;
+                btn.innerText = "Resume Block";
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                btn.classList.add('bg-orange-600', 'hover:bg-orange-700');
+            } else {
+                // Start
+                if(state.timerTime <= 0) return;
+                state.timerRunning = true;
+                btn.innerText = "Pause";
+                btn.classList.remove('bg-orange-600', 'hover:bg-orange-700');
+                btn.classList.add('bg-stone-600', 'hover:bg-stone-700');
+                
+                state.timerInterval = setInterval(() => {
+                    state.timerTime--;
+                    updateTimerVisuals();
+                    
+                    if (state.timerTime <= 0) {
+                        clearInterval(state.timerInterval);
+                        state.timerRunning = false;
+                        btn.innerText = "Complete";
+                        btn.disabled = true;
+                        // Celebration or Done state
+                        document.getElementById('timer-display').innerText = "DONE";
+                        document.getElementById('timer-display').classList.add('text-emerald-600');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(state.timerInterval);
+            state.timerRunning = false;
+            state.timerTime = 300;
+            updateTimerVisuals();
+            
+            const btn = document.getElementById('timer-btn');
+            btn.innerText = "Start Block";
+            btn.classList.remove('bg-stone-600', 'bg-red-600');
+            btn.classList.add('bg-orange-600');
+            btn.disabled = false;
+            document.getElementById('timer-display').classList.remove('text-emerald-600');
+        }
+
+        // --- Initialization ---
+        window.onload = function() {
+            initTriggerChart();
+            initUrgeChart();
+            initRewardChart();
+            updateTimerVisuals(); // Init timer UI
+        };
+
+    </script>
+</body>
+</html>
