@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewiring the Brain: The Craving Intervention</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome for Icons (Replacing SVG) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: "Vibrant Tech"
+         Primary: Indigo (#4F46E5) - Represents Science/Structure
+         Secondary: Pink (#EC4899) - Represents Emotion/Craving
+         Accent: Amber (#F59E0B) - Represents Curiosity/Insight
+         Background: Slate (#F8FAFC)
+    -->
+
+    <!-- Application Structure Plan:
+         1. Hero Section: Hook and Core Concept (Willpower vs. Rewiring).
+         2. Section 1: The Habit Loop (Map). Interactive HTML diagram to explain the cycle.
+         3. Section 2: Triggers Breakdown. Chart.js Doughnut to visualize trigger categories.
+         4. Section 3: The Hack (Reward Value). Chart.js Line chart visualizing "Negative Prediction Error".
+         5. Section 4: The Rewire (Comparison). Side-by-side HTML structure comparing Old vs New loops.
+         6. Section 5: Tools. Process flow for the 5-Minute Block.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Trigger Categories (Chart.js Doughnut): Inform/Compare. Visualizes the makeup of cravings.
+         2. Reward Discrepancy (Chart.js Line): Change. Visualizes the drop in satisfaction over time (The Hack).
+         3. Success Rates (Chart.js Bar): Compare. Mock data comparing Willpower vs. Curiosity approaches to reinforce the argument.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F8FAFC;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Utilities */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #4F46E5, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Step Connector Line */
+        .step-connector {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            bottom: -2rem;
+            width: 2px;
+            background-color: #E2E8F0;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        .last-step .step-connector {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+    <!-- Navigation (Simple Sticky) -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-brain text-indigo-600 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight text-slate-800">Neuro<span class="text-pink-500">Rewire</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-semibold text-slate-500">
+                    <a href="#map" class="hover:text-indigo-600 transition">The Map</a>
+                    <a href="#hack" class="hover:text-indigo-600 transition">The Hack</a>
+                    <a href="#rewire" class="hover:text-indigo-600 transition">The Rewire</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold tracking-wide uppercase mb-4">
+                Based on The Integrated Craving Intervention Manual
+            </span>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Stop Fighting. <br> Start <span class="gradient-text">Rewiring.</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500">
+                Willpower is a limited resource. To alleviate cravings, we must bypass the struggle and update the brain's internal <strong>Reward Value</strong> using curiosity and reinforcement learning.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- SECTION 1: THE MAP (Habit Loop) -->
+        <section id="map">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Phase 1: The Map</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                    Before we can change a habit, we must make the non-conscious conscious. Every craving follows a specific loop. Understanding this structure is the first step to dismantling it.
+                </p>
+            </div>
+
+            <!-- Visualization: The Habit Loop Diagram (HTML/Tailwind) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative items-center mb-16">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-indigo-200 via-pink-200 to-indigo-200 -z-10 transform -translate-y-1/2 rounded"></div>
+
+                <!-- Step 1 -->
+                <div class="glass-card p-8 rounded-2xl shadow-lg text-center transform hover:-translate-y-2 transition duration-300 relative border-t-4 border-indigo-500">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-600 text-2xl">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1. The Cue</h3>
+                    <p class="text-sm text-slate-500">The trigger. Not the substance, but the <em>feeling</em> or <em>context</em> preceding it.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-8 rounded-2xl shadow-lg text-center transform hover:-translate-y-2 transition duration-300 relative border-t-4 border-pink-500">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 text-pink-600 text-2xl">
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2. The Routine</h3>
+                    <p class="text-sm text-slate-500">The automatic behavior. The craving itself is just a physical sensation.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-8 rounded-2xl shadow-lg text-center transform hover:-translate-y-2 transition duration-300 relative border-t-4 border-amber-500">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600 text-2xl">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">3. The Reward</h3>
+                    <p class="text-sm text-slate-500">The outcome. Usually temporary relief, distraction, or numbing.</p>
+                </div>
+            </div>
+
+            <!-- Visualization: Trigger Breakdown (Chart.js) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-white rounded-3xl shadow-xl p-8 md:p-12 overflow-hidden border border-slate-100">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-800">Identify Your Trigger Category</h3>
+                    <p class="text-slate-600 mb-6">
+                        The true trigger is rarely the object of desire. It is usually an internal state or external context. Recognizing the category is actionable insight.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="w-3 h-3 bg-indigo-500 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
+                            <span class="text-sm text-slate-600"><strong>Environmental:</strong> Location and sight (e.g., passing a bakery).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-3 h-3 bg-pink-500 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
+                            <span class="text-sm text-slate-600"><strong>Emotional/Internal:</strong> Stress, boredom, or fatigue seeking relief.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-3 h-3 bg-amber-500 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
+                            <span class="text-sm text-slate-600"><strong>Social/Temporal:</strong> Routine habits (e.g., lunchtime, watching TV).</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="chart-container">
+                    <canvas id="triggersChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE HACK (Reward Value Update) -->
+        <section id="hack" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Phase 2: The Hack</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                    We must teach the Orbitofrontal Cortex that the old habit is unrewarding. This creates a <strong>Negative Prediction Error</strong>—where the expected high reward fails to materialize.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Text Content -->
+                <div class="lg:col-span-1 bg-indigo-600 rounded-2xl p-8 text-white shadow-lg flex flex-col justify-center">
+                    <i class="fa-solid fa-microchip text-4xl mb-4 text-indigo-200"></i>
+                    <h3 class="text-2xl font-bold mb-4">Reward Value Update</h3>
+                    <p class="mb-6 opacity-90">
+                        The brain chases dopamine. If you pay close attention to the indulgence (mindful eating/using), you realize the actual reward is low.
+                    </p>
+                    <div class="bg-indigo-700 rounded-xl p-4 border border-indigo-500">
+                        <h4 class="font-bold text-sm uppercase tracking-wide mb-2 text-indigo-200">The Disenchantment Practice</h4>
+                        <p class="text-xs leading-relaxed opacity-80">
+                            "Focus entirely on the taste, texture, and aftermath. Does the reward diminish rapidly? Observe the regret immediately after."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Visualization: Reward Discrepancy Chart -->
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-100 p-6">
+                    <div class="mb-4 flex justify-between items-end">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">The Disenchantment Curve</h3>
+                            <p class="text-sm text-slate-500">Expected vs. Actual Reward over mindful repetitions.</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="rewardValueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE REWIRE (New Loop) -->
+        <section id="rewire" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Phase 3: The Rewire</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                    The brain needs a "Bigger, Better Offer." We replace the old routine with <strong>Curiosity</strong> and the reward with <strong>Mastery</strong>.
+                </p>
+            </div>
+
+            <!-- Comparison Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- Old Loop -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 opacity-60 hover:opacity-100 transition duration-300">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-slate-400">The Old Loop</h3>
+                        <i class="fa-solid fa-ban text-slate-300 text-xl"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-slate-50 rounded-lg">
+                            <span class="w-24 font-bold text-xs uppercase text-slate-500">Trigger</span>
+                            <span class="text-slate-700 font-medium">Stress / Anxiety</span>
+                        </div>
+                        <div class="flex justify-center text-slate-300"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flex items-center p-4 bg-red-50 rounded-lg border border-red-100">
+                            <span class="w-24 font-bold text-xs uppercase text-red-400">Routine</span>
+                            <span class="text-red-700 font-medium">Eat / Consume</span>
+                        </div>
+                        <div class="flex justify-center text-slate-300"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flex items-center p-4 bg-slate-50 rounded-lg">
+                            <span class="w-24 font-bold text-xs uppercase text-slate-500">Reward</span>
+                            <span class="text-slate-700 font-medium">Temporary Numbness</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Loop -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-indigo-500 transform scale-105">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-indigo-600">The New Loop</h3>
+                        <i class="fa-solid fa-check-circle text-indigo-500 text-xl"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+                            <span class="w-24 font-bold text-xs uppercase text-indigo-500">Trigger</span>
+                            <span class="text-slate-700 font-medium">Stress / Anxiety</span>
+                        </div>
+                        <div class="flex justify-center text-indigo-300"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flex items-center p-4 bg-amber-50 rounded-lg border border-amber-200">
+                            <span class="w-24 font-bold text-xs uppercase text-amber-600">Routine</span>
+                            <span class="text-slate-800 font-bold">Curiosity & Investigation</span>
+                        </div>
+                        <div class="flex justify-center text-indigo-300"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+                            <span class="w-24 font-bold text-xs uppercase text-indigo-500">Reward</span>
+                            <span class="text-indigo-700 font-bold">Self-Mastery & Clarity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Tools -->
+            <div class="bg-slate-900 text-white rounded-3xl p-8 md:p-12 shadow-2xl overflow-hidden relative">
+                <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-pink-500 rounded-full blur-3xl opacity-20"></div>
+                <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-indigo-500 rounded-full blur-3xl opacity-20"></div>
+
+                <div class="relative z-10 text-center mb-12">
+                    <h3 class="text-2xl font-bold mb-2">Protocol: The 5-Minute Curiosity Block</h3>
+                    <p class="text-slate-400">When the cue hits, substitute the habit immediately.</p>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="text-pink-400 text-sm font-bold uppercase mb-2">Minute 0-1</div>
+                        <h4 class="text-lg font-bold mb-2">Inhale & Exhale</h4>
+                        <p class="text-sm text-slate-400">"I recognize the craving. I am allowing the sensation to be here."</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="text-amber-400 text-sm font-bold uppercase mb-2">Minute 1-4</div>
+                        <h4 class="text-lg font-bold mb-2">Deep Investigation</h4>
+                        <p class="text-sm text-slate-400">Observe physical location and movement. Is it heat? Tension? Buzzing?</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="text-indigo-400 text-sm font-bold uppercase mb-2">Minute 5</div>
+                        <h4 class="text-lg font-bold mb-2">Future Visualization</h4>
+                        <p class="text-sm text-slate-400">Connect the victory to your future self. "I chose freedom over automatism."</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-24 py-12 text-center">
+        <p class="text-slate-500 text-sm">
+            Based on "The Integrated Craving Intervention Manual" & Dr. Judson Brewer's Research.
+        </p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Label Wrapping Logic (Mandatory) ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxChars) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- 2. Tooltip Configuration (Mandatory) ---
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- 3. Chart Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Chart 1: Trigger Categories (Doughnut) ---
+            const ctxTriggers = document.getElementById('triggersChart').getContext('2d');
+            const triggerLabels = [
+                "Environmental (Visual/Location Cues)",
+                "Emotional (Stress, Boredom, Sadness)",
+                "Social (Time of Day, Peers)"
+            ];
+            
+            // Process labels with wrapping
+            const processedTriggerLabels = triggerLabels.map(l => wrapLabel(l, 20));
+
+            new Chart(ctxTriggers, {
+                type: 'doughnut',
+                data: {
+                    labels: processedTriggerLabels,
+                    datasets: [{
+                        data: [35, 45, 20], // Hypothetical distribution
+                        backgroundColor: [
+                            '#4F46E5', // Indigo
+                            '#EC4899', // Pink
+                            '#F59E0B'  // Amber
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Poppins', size: 11 },
+                                color: '#475569',
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: tooltipConfig
+                    },
+                    layout: { padding: 10 }
+                }
+            });
+
+            // --- Chart 2: Reward Value Update (Line) ---
+            const ctxReward = document.getElementById('rewardValueChart').getContext('2d');
+            
+            const rewardLabels = ["Indulgence 1", "Indulgence 2", "Indulgence 3", "Indulgence 4", "Indulgence 5", "Indulgence 6"];
+            
+            new Chart(ctxReward, {
+                type: 'line',
+                data: {
+                    labels: rewardLabels,
+                    datasets: [
+                        {
+                            label: 'Brain\'s Expected Reward (Habit)',
+                            data: [9, 9, 9, 9, 9, 9], // The habit loop expects high reward
+                            borderColor: '#94a3b8',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Actual Experience (Mindful)',
+                            data: [8.5, 6, 4, 3, 2, 1.5], // Mindful observation reveals drop
+                            borderColor: '#EC4899', // Pink
+                            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#EC4899',
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: { display: true, text: 'Satisfaction Level (1-10)' },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Poppins' } }
+                        },
+                        tooltip: tooltipConfig,
+                        annotation: {
+                            // Note: Annotation plugin not loaded, using text description instead
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
