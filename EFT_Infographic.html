@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacking the Lizard Brain: Neuroscience of Change</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chosen Palette: "Electric Neuro"
+         Primary: Indigo (#4F46E5) - Represents the deep subconscious/structure
+         Secondary: Cyan (#06B6D4) - Represents clarity/awareness
+         Accent: Pink (#EC4899) - Represents the amygdala/emotion
+         Warning: Amber (#F59E0B) - Represents the trigger/craving
+         Background: Slate (#F8FAFC)
+    -->
+
+    <!-- Application Structure Plan:
+         1. Hero Section: "The Dual Processor" - Hooking the user with the conflict between System 1 (Lizard) and System 2 (Human).
+         2. Section 1: The Hardware. Visualizing the power difference between Subconscious and Conscious minds.
+         3. Section 2: The Trap (The Habit Loop). Visualizing how triggers lead to rewards via automaticity.
+         4. Section 3: The Interventions (EFT & Mindfulness). 
+            - Visualizing Amygdala downregulation (EFT).
+            - Visualizing Reward Value Update (Mindfulness/Curiosity).
+         5. Section 4: The New Protocol. A timeline of the 5-minute intervention.
+         6. Conclusion.
+         Structure chosen to lead the user from Problem (Brain structure) -> Mechanism (Habit Loop) -> Solution (Techniques).
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. "Processing Power" (Chart.js Pie): Inform. Shows the massive disparity between Subconscious (System 1) and Conscious (System 2) processing. Justification: Emphasizes why willpower fails.
+         2. "Brain State Radar" (Chart.js Radar): Compare. Contrast "Survival Mode" vs. "Regulated State" across metrics like Amygdala Activation, PFC Logic, and Heart Rate. Justification: Shows the physiological shift EFT/Mindfulness creates.
+         3. "Trigger Distribution" (Chart.js Doughnut): Inform. Categorizes triggers (Emotional, Environmental, Social). Justification: Helps users identify their own cues.
+         4. "Reward Prediction Error" (Chart.js Bar): Change/Compare. Visualizes the "Disenchantment" process where Actual Reward < Expected Reward. Justification: Core mechanism of Brewer's RVU theory.
+         5. "Amygdala Response Curve" (Chart.js Line): Change. Shows stress spike vs. calming effect of Tapping. Justification: Visualizes EFT's somatic impact.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+
+        /* Mandatory Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Utilities for Diagrams (CSS-only) */
+        .arrow-down {
+            width: 0; 
+            height: 0; 
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #CBD5E1;
+            margin: 10px auto;
+        }
+        
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-cyan-900 text-white pt-20 pb-24 px-4 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <div class="inline-block px-4 py-1 mb-6 rounded-full bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 text-sm font-semibold tracking-wide uppercase">
+                Subconscious Rewiring Manual
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
+                Hacking the <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">Lizard Brain</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-indigo-100 max-w-3xl mx-auto leading-relaxed">
+                Why willpower fails and how to use <strong>Neuroscience</strong>, <strong>EFT</strong>, and <strong>Curiosity</strong> to reprogram your automatic habits.
+            </p>
+        </div>
+        <!-- Decorative Circle (CSS only) -->
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
+            <div class="w-[800px] h-[800px] rounded-full border border-white/20 absolute top-[-400px] left-1/2 transform -translate-x-1/2"></div>
+            <div class="w-[600px] h-[600px] rounded-full border border-white/20 absolute top-[-300px] left-1/2 transform -translate-x-1/2"></div>
+        </div>
+    </header>
+
+    <!-- Content Wrapper -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 space-y-20 pb-20">
+
+        <!-- SECTION 1: THE HARDWARE (System 1 vs System 2) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Text Content -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-indigo-500">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mr-3">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">The Dual Processor Problem</h2>
+                </div>
+                <p class="text-slate-600 mb-6 leading-relaxed">
+                    Your brain operates on two distinct systems. <strong>The Lizard Brain (System 1)</strong> is the ancient, automatic processor responsible for survival (Fight/Flight) and habits. It is fast, effortless, and powerful. <strong>The Neocortex (System 2)</strong> is your rational, conscious mind. It is slow, effortful, and easily exhausted.
+                </p>
+                <div class="bg-slate-50 p-4 rounded-lg border-l-4 border-cyan-500">
+                    <p class="text-sm text-slate-700 italic">
+                        "The Lizard Brain's primal drives form the foundation of System 1's speed. When a craving is triggered, it is System 1 that initiates the response before you can even think."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Visualization: Processing Power -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
+                <h3 class="text-lg font-bold text-slate-700 mb-2">Conscious vs. Subconscious Load</h3>
+                <p class="text-sm text-slate-500 mb-6 text-center">Why you can't "think" your way out of a panic attack.</p>
+                <div class="chart-container">
+                    <canvas id="systemPowerChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE STATE (Radar Chart) -->
+        <section class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3">
+                <div class="p-8 lg:p-12 lg:col-span-1 bg-slate-900 text-white flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold mb-6">Survival vs. Thriving</h2>
+                    <p class="text-slate-300 mb-6 text-lg">
+                        When the <strong>Amygdala</strong> (Lizard Brain) detects a threat or a craving trigger, it hijacks the system. Logic shuts down, and survival instincts take over.
+                    </p>
+                    <p class="text-slate-300 mb-6">
+                        Techniques like EFT and Mindfulness are designed to shift this physiological state, moving you from the red zone (Survival) to the blue zone (Regulation).
+                    </p>
+                    <div class="mt-auto">
+                        <div class="flex items-center space-x-2 text-sm text-pink-400 mb-2">
+                            <i class="fa-solid fa-circle text-[10px]"></i> <span>High Amygdala Activation</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm text-cyan-400">
+                            <i class="fa-solid fa-circle text-[10px]"></i> <span>High Prefrontal Cortex</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-8 lg:p-12 lg:col-span-2 bg-white">
+                    <div class="chart-container" style="height: 400px; max-height: 500px;">
+                        <canvas id="brainStateRadar"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-400 mt-4">
+                        Comparison of neurological and physiological markers during Stress (Craving) vs. Calm (After Intervention).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE HABIT LOOP -->
+        <section>
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">The Subconscious Trap</h2>
+                <p class="text-slate-600 text-lg">
+                    The subconscious mind builds <strong>Habit Loops</strong> to save energy. A trigger leads to a routine, which provides a reward (relief). Identifying these components is the first step to breaking the code.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                
+                <!-- Visualization: The Loop Diagram (HTML/CSS) -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">The Anatomy of a Craving</h3>
+                    
+                    <div class="flex flex-col items-center space-y-2">
+                        <!-- Step 1 -->
+                        <div class="w-full bg-amber-50 border border-amber-200 p-4 rounded-xl text-center card-hover">
+                            <div class="text-amber-600 font-bold text-sm uppercase tracking-wide mb-1">1. The Cue (Trigger)</div>
+                            <div class="text-slate-700 font-semibold">Stress / Boredom / Sight</div>
+                            <div class="text-xs text-slate-500 mt-1">Lizard Brain detects discomfort.</div>
+                        </div>
+                        
+                        <div class="arrow-down"></div>
+
+                        <!-- Step 2 -->
+                        <div class="w-full bg-pink-50 border border-pink-200 p-4 rounded-xl text-center card-hover">
+                            <div class="text-pink-600 font-bold text-sm uppercase tracking-wide mb-1">2. The Routine</div>
+                            <div class="text-slate-700 font-semibold">The Craving / Behavior</div>
+                            <div class="text-xs text-slate-500 mt-1">Automatic System 1 Response.</div>
+                        </div>
+
+                        <div class="arrow-down"></div>
+
+                        <!-- Step 3 -->
+                        <div class="w-full bg-indigo-50 border border-indigo-200 p-4 rounded-xl text-center card-hover">
+                            <div class="text-indigo-600 font-bold text-sm uppercase tracking-wide mb-1">3. The Reward</div>
+                            <div class="text-slate-700 font-semibold">Temporary Relief / Numbing</div>
+                            <div class="text-xs text-slate-500 mt-1">Reinforces the loop for next time.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization: Trigger Distribution (Chart) -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Know Your Triggers</h3>
+                    <p class="text-sm text-slate-500 mb-6">Most cravings are not about the substance, but the context.</p>
+                    <div class="chart-container">
+                        <canvas id="triggerDonut"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE INTERVENTIONS -->
+        <section class="space-y-12">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-900">Rewiring Protocols</h2>
+                <div class="w-20 h-1 bg-cyan-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Protocol A: EFT (Somatic) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="order-2 lg:order-1 bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">A. EFT Tapping: The Amygdala Override</h3>
+                    <p class="text-sm text-slate-500 mb-6">
+                        Tapping sends a calming signal to the amygdala while you focus on the stress. This disconnects the "Panic" signal from the "Trigger."
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="eftEffectChart"></canvas>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2 p-4">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Somatic Interruption</h3>
+                    <p class="text-slate-600 mb-4">
+                        <strong>EFT (Emotional Freedom Technique)</strong> targets the hardware directly. By tapping on meridian points, you send safety signals to the body.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-hand-point-up text-pink-500 mt-1 mr-3"></i>
+                            <span class="text-slate-700 text-sm"><strong>The Setup:</strong> "Even though I have this craving, I accept myself." (Reduces shame/resistance).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-wave-square text-cyan-500 mt-1 mr-3"></i>
+                            <span class="text-slate-700 text-sm"><strong>The Signal:</strong> Disarms the Fight/Flight response in the Amygdala.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-rotate-left text-indigo-500 mt-1 mr-3"></i>
+                            <span class="text-slate-700 text-sm"><strong>The Result:</strong> The trigger exists, but the physical compulsion fades.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Protocol B: Mindfulness (Cognitive) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="p-4">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4">Reward Value Update (RVU)</h3>
+                    <p class="text-slate-600 mb-4">
+                        You cannot fight a habit with willpower. You must <strong>disenchant</strong> it. By paying close attention (Curiosity), you realize the old reward isn't actually that good.
+                    </p>
+                    <div class="bg-slate-100 p-4 rounded-lg border-l-4 border-amber-500">
+                        <p class="text-sm text-slate-700">
+                            <strong>Negative Prediction Error:</strong> When the brain expects a "10/10" reward (Dopamine hit) but actually experiences a "3/10" reality (Stomach ache, regret), the habit updates and weakens.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">B. The Disenchantment Effect</h3>
+                    <p class="text-sm text-slate-500 mb-6">
+                        Comparing the brain's "Expected Reward" vs. "Actual Experience" during mindful observation.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="rvuChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: THE 5-MINUTE BLOCK -->
+        <section class="bg-indigo-900 text-white rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <!-- Decorative BG -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+
+            <div class="relative z-10 text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">The 5-Minute Curiosity Block</h2>
+                <p class="text-indigo-200 text-lg max-w-2xl mx-auto">
+                    The practical application. When the cue hits, substitute the automatic routine with this new protocol.
+                </p>
+            </div>
+
+            <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="bg-indigo-800/50 backdrop-blur border border-indigo-700 p-6 rounded-xl">
+                    <div class="text-4xl font-bold text-cyan-400 mb-2">0-1</div>
+                    <div class="text-xs uppercase tracking-widest text-indigo-300 mb-4">Minute</div>
+                    <h3 class="text-xl font-bold mb-2">Pause & Locate</h3>
+                    <p class="text-sm text-indigo-100">
+                        Don't act. Say "I allow this sensation." Locate the feeling in your body (tightness, heat, buzzing).
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-indigo-800/50 backdrop-blur border border-indigo-700 p-6 rounded-xl">
+                    <div class="text-4xl font-bold text-pink-400 mb-2">1-4</div>
+                    <div class="text-xs uppercase tracking-widest text-indigo-300 mb-4">Minutes</div>
+                    <h3 class="text-xl font-bold mb-2">Investigate</h3>
+                    <p class="text-sm text-indigo-100">
+                        Ride the wave. Observe it rising and falling. Be radically curious about the texture of the urge.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-indigo-800/50 backdrop-blur border border-indigo-700 p-6 rounded-xl">
+                    <div class="text-4xl font-bold text-amber-400 mb-2">5</div>
+                    <div class="text-xs uppercase tracking-widest text-indigo-300 mb-4">Minute</div>
+                    <h3 class="text-xl font-bold mb-2">Future Link</h3>
+                    <p class="text-sm text-indigo-100">
+                        Visualize the victory. Connect this moment of resistance to your identity as a free, masterful person.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p class="mb-2"><strong>Sources:</strong> "EFT: A Cognitive and Somatic Approach" & "The Integrated Craving Intervention Manual"</p>
+            <p>Generated for Educational Purposes.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        // --- Utility: Label Wrapper (Mandatory) ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxChars) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Common Tooltip Config (Mandatory) ---
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: System Power (Pie) ---
+        // Context: Comparing the massive processing power of the subconscious to the limited conscious mind.
+        const ctxSystem = document.getElementById('systemPowerChart').getContext('2d');
+        new Chart(ctxSystem, {
+            type: 'pie',
+            data: {
+                labels: ['Subconscious (System 1)', 'Conscious (System 2)'],
+                datasets: [{
+                    data: [95, 5], // Scientific estimate: 95% of brain activity is non-conscious
+                    backgroundColor: ['#4F46E5', '#06B6D4'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltip,
+                    title: {
+                        display: true,
+                        text: 'Processing Capacity Share'
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: Brain State Radar (Radar) ---
+        // Context: Comparing the physiological profile of a "Craving" state vs "Regulated" state.
+        const ctxRadar = document.getElementById('brainStateRadar').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Amygdala Activity (Fear/Stress)', 
+                    'Prefrontal Cortex (Logic)', 
+                    'Heart Rate Variability', 
+                    'Impulse Control', 
+                    'Dopamine Seeking'
+                ].map(l => wrapLabel(l, 15)), // Wrap labels
+                datasets: [{
+                    label: 'Survival Mode (The Craving)',
+                    data: [90, 20, 30, 10, 95],
+                    fill: true,
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)', // Pink transparent
+                    borderColor: '#EC4899',
+                    pointBackgroundColor: '#EC4899',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#EC4899'
+                }, {
+                    label: 'Regulated State (After EFT)',
+                    data: [30, 85, 80, 90, 40],
+                    fill: true,
+                    backgroundColor: 'rgba(6, 182, 212, 0.2)', // Cyan transparent
+                    borderColor: '#06B6D4',
+                    pointBackgroundColor: '#06B6D4',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#06B6D4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                elements: {
+                    line: { borderWidth: 3 }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#E2E8F0' },
+                        grid: { color: '#E2E8F0' },
+                        pointLabels: {
+                            font: { size: 11, family: 'Inter' },
+                            color: '#475569'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // --- CHART 3: Trigger Distribution (Doughnut) ---
+        // Context: Categorizing where cues come from.
+        const ctxTrigger = document.getElementById('triggerDonut').getContext('2d');
+        new Chart(ctxTrigger, {
+            type: 'doughnut',
+            data: {
+                labels: ['Emotional (Stress/Anxiety)', 'Environmental (Visuals)', 'Social/Routine'],
+                datasets: [{
+                    data: [50, 30, 20],
+                    backgroundColor: ['#EC4899', '#F59E0B', '#4F46E5'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 4: EFT Effect (Line) ---
+        // Context: Showing how tapping intervenes in the stress spike.
+        const ctxEft = document.getElementById('eftEffectChart').getContext('2d');
+        new Chart(ctxEft, {
+            type: 'line',
+            data: {
+                labels: ['Trigger', '0:30s', '1:00m', '1:30m', '2:00m', '2:30m'],
+                datasets: [{
+                    label: 'Standard Stress Response',
+                    data: [2, 8, 9, 9, 8, 7],
+                    borderColor: '#94A3B8', // Gray
+                    borderDash: [5, 5],
+                    tension: 0.4
+                }, {
+                    label: 'With EFT Tapping',
+                    data: [2, 6, 4, 3, 2, 1],
+                    borderColor: '#06B6D4', // Cyan
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Amygdala Activation' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 5: Reward Value Update (Bar) ---
+        // Context: Visualizing the "Disenchantment" / Negative Prediction Error.
+        const ctxRvu = document.getElementById('rvuChart').getContext('2d');
+        new Chart(ctxRvu, {
+            type: 'bar',
+            data: {
+                labels: wrapLabel('Expected Reward (The Fantasy) vs Actual Reward (The Reality)', 30),
+                datasets: [{
+                    label: 'Dopamine Prediction (Habit)',
+                    data: [9],
+                    backgroundColor: '#EC4899',
+                    borderRadius: 4
+                }, {
+                    label: 'Actual Experience (Mindful)',
+                    data: [3],
+                    backgroundColor: '#4F46E5',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        max: 10,
+                        title: { display: true, text: 'Reward Intensity (0-10)' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltip,
+                    title: {
+                        display: true,
+                        text: 'Creating the Prediction Error'
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
